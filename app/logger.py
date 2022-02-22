@@ -5,6 +5,7 @@ class Logger:
     
     _instance = None
     _logging = None
+    
     def __init(self):
         raise RuntimeError('Call instance() instead')
 
