@@ -5,6 +5,8 @@ class Read:
 
     def __init__(self,conn):
         self.conn = conn
+        if conn is None:
+            raise TypeError("Connection object cannot be None")
         self.batch_size = 20
         self.batch_skip = 0
 
@@ -46,6 +48,5 @@ class Read:
 
         except Exception as e:
             print(e)
-            return []
-
+            raise e
      

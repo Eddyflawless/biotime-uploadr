@@ -8,6 +8,7 @@ class DBConnector:
     
     def __init__(self,host,user,password,database,port):
         self.status = 0
+        self.connector = None
         try:
 
             db_connection =  connector.connect(
@@ -18,6 +19,7 @@ class DBConnector:
                 database=database,
                 raise_on_warnings=True
             )
+
             self.connector = db_connection
 
         except Exception as e:
@@ -26,3 +28,6 @@ class DBConnector:
 
     def getConnector(self):
         return self.connector
+
+    def __str__(self):
+        return f"{self.connector}"

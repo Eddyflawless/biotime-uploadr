@@ -10,9 +10,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 from app import db, read, write, api, logger
 DBConnector = db.DBConnector
-Read = read.Read
-Write = write.Write
-Api = api.Api
 
 xlogger = logger.Logger.getInstance().getLogger()
 
@@ -36,10 +33,10 @@ def getServerCredentials():
     return endpoint,client_id,client_secret
 
 def getRead():
-    return Read(db_connection)
+    return read.Read(db_connection)
 
 def getWrite():
-    return Write(db_connection)
+    return write.Write(db_connection)
 
 def get_db_con():
 
@@ -74,7 +71,7 @@ def postToServer(endpoint,data,client_id="",client_secret=""):
         auth_64_bytes = str(auth_64_bytes)
 
         headers = {"Content-Type": "application/json; charset=utf-8",   "Authorization": "Basic " + auth_64_bytes }
-        api_post = Api()
+        api_post = api.Api()
         response = api_post.post(endpoint,data=data, headers=headers)
         return response
 

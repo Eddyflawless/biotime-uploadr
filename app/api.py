@@ -2,6 +2,7 @@ import sys
 import requests
 
 class Api:
+
     def __init__(self,base_url=None):
         self.base_url = base_url
 
@@ -20,7 +21,7 @@ class Api:
         if self.base_url is None:
             url = endpoint
         else:
-            url = self.base_url + endpoint      
+            url = self.base_url + "/" +endpoint      
 
         return url    
 
