@@ -7,7 +7,7 @@ class Logger:
     _logging = None
     
     def __init(self):
-        raise RuntimeError('Call instance() instead')
+        raise RuntimeError('Call getInstance() instead')
 
     @classmethod
     def getInstance(cls):

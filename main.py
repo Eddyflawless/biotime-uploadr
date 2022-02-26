@@ -49,7 +49,7 @@ def get_db_con():
         db_connection = conn.getConnector()
 
         if db_connection is None:
-            raise Error("Connector cannot be undefined")
+            raise TypeError("Connector cannot be undefined")
 
         db_Info = db_connection.get_server_info()   
 
@@ -72,7 +72,7 @@ def postToServer(endpoint,data,client_id="",client_secret=""):
 
         headers = {"Content-Type": "application/json; charset=utf-8",   "Authorization": "Basic " + auth_64_bytes }
         api_post = api.Api()
-        response = api_post.post(endpoint,data=data, headers=headers)
+        response = api_post.post(endpoint=endpoint,data=data, headers=headers)
         return response
 
     except requests.exceptions.RequestException as e:
@@ -85,7 +85,7 @@ def postToServer(endpoint,data,client_id="",client_secret=""):
 def submitAttendance(json_data):
 
     endpoint, client_id, client_secret = getServerCredentials()
-    
+
     response = postToServer(endpoint=endpoint,data=json_data,
     client_id=client_id,client_secret=client_secret)
 
@@ -99,11 +99,11 @@ def submitAttendance(json_data):
 
 
 def updateAttendanceTaskParam(att_date,count):
-    print("passed: update cron_task :", batch_skip)    
 
-    batch_skip = read.batch_skip
-    batch_skip = count + batch_skip;
-    write.updateAttendanceTaskParam(att_date, batch_skip);
+
+    batch_skip = getRead().batch_skip
+    batch_skip = count + int(batch_skip);
+    getWrite().updateAttendanceTaskParam(att_date, batch_skip);
 
 
 def getAttendanceDate():
@@ -163,6 +163,8 @@ def main_init():
 
         attendances, count = getAttendances(rows)
 
+        print(f"attendances {attendances} and count {count}")
+
         post_data['attendances'] = attendances
         
         json_data = json.dumps(post_data)
@@ -170,7 +172,11 @@ def main_init():
         if count != 0:
 
             if submitAttendance(json_data):
+                print("resonse sent")
                 updateAttendanceTaskParam(att_date,count)
+            else:
+                print("couldnto submit attendance")    
+
 
         print("200 closed---")
        
