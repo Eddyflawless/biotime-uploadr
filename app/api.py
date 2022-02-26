@@ -1,5 +1,6 @@
 import sys
 import requests
+from pprint import pprint
 
 class Api:
 
@@ -13,7 +14,8 @@ class Api:
     def post(self,endpoint,data,headers={}):
 
         url = self.construct_uri(endpoint)
-        r = requests.post(url=url,data=data,headers=headers)
+        r = requests.post(url=url,data=data, headers=headers, timeout=2.50)
+        print("r",r)
         return r
 
     def construct_uri(self, endpoint):
