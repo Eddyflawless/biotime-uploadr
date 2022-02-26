@@ -1,9 +1,10 @@
 import unittest
 from app import db, read, write, api
+from app.util import isValidDate
 import main
 from dotenv import load_dotenv
 
-from main import getEnv
+from main import getEnv, getAttendanceDate
 from pathlib import Path
 load_dotenv(dotenv_path = Path('.env'))
 
@@ -15,7 +16,8 @@ class TestApi(unittest.TestCase):
 
     def test_construct_uri_with_no_base_url(self):
         endpoint = f"{self.base_url}"
-        self.assertEqual(self.api.construct_uri(endpoint),self.base_url)
+        _api = api.Api()
+        self.assertEqual(_api.construct_uri(endpoint),self.base_url)
        
     def test_construct_uri(self):
         endpoint = "post"
@@ -29,6 +31,22 @@ class TestApi(unittest.TestCase):
 class TestLogger(unittest.TestCase):
     def setUp(self):
         pass
+
+class TestUtil(unittest.TestCase): 
+    def setUp(self):
+        pass
+
+    def test_is_valid_date_returns_error_on_none(self):
+        with self.assertRaises(ValueError):
+            isValidDate(None)
+
+    def test_is_valid_date_returns_error_on_invalid_date(self):
+        with self.assertRaises(ValueError):
+            isValidDate("2015-01")
+        
+    def test_is_valid_date_passes_on_valid_date(self):
+        isValidDate("2015-01-01")
+
 
 class TestDb(unittest.TestCase):
 
@@ -74,11 +92,15 @@ class TestWrite(unittest.TestCase):
         self.conn = conn.getConnector()
 
     def test_write_raises_error(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(TypeError) as d:
             write.Write(None)
     
     def test_write_doesnot_raise_error(self):
         write.Write(self.conn)
+
+    def test_write_doesnot_raise_error(self):
+        writer_db = write.Write(self.conn)
+        # write_db.createAttendanceTaskParam()
 
 
 class TestRead(unittest.TestCase):
@@ -101,7 +123,6 @@ class TestRead(unittest.TestCase):
         read.Read(self.conn)     
         
 
-
 class TestMigration(unittest.TestCase):
     def setUp(self):
         pass
@@ -110,12 +131,25 @@ class TestMigration(unittest.TestCase):
 class TestMain(unittest.TestCase):    
     def setUp(self):
         #insert record into table based on current date (if it doesnot exist)
-        pass
+        user,password,database,host,port = getEnv()
+        self.user = user
+        self.password = password
+        self.database = database
+        self.host = host
+        self.port = port
+
+        conn = db.DBConnector(host,user,password,database,port)
+        self.conn = conn.getConnector()
+
+        # self.att_date = getAttendanceDate()
+        # print(f"test: att_date {att_date}")
+        # #createAttendanceTaskParam
+        # writer_db = write.Write(self.conn)
 
     def test_main(self):
         main.main_init()
 
 
 if __name__ == '__main__':
-    
+
     unittest.main()
